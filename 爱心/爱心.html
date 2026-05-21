@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>爱心祝福</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        html,body{width:100%;height:100%;overflow:hidden;background:linear-gradient(135deg,#ff9a9e,#fad0c4,#fecfef,#a8edea);}
+        
+        #page1{
+            width:100%;height:100%;
+            display:flex;flex-direction:column;
+            align-items:center;justify-content:center;
+            position:fixed;top:0;left:0;z-index:999;
+        }
+        #loadTxt{
+            font-size:16px;color:#fff;margin-bottom:20px;
+        }
+        #enterBtn{
+            padding:15px 40px;font-size:18px;color:#fff;
+            background:rgba(255,255,255,0.3);
+            border:2px solid #fff;border-radius:50px;
+            opacity:0.5;cursor:default;
+        }
+        #enterBtn.active{
+            opacity:1;cursor:pointer;
+        }
+
+        #heart{
+            width:100%;height:100%;
+            position:relative;
+            display:none;
+        }
+
+        .item{
+            position:absolute;
+            width: 130px;
+            height: 44px;
+            display:flex;align-items:center;justify-content:center;
+            font-size:15px;
+            font-weight:bold;
+            border-radius:12px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.1);
+            z-index:10;
+        }
+
+        audio{display:none;}
+    </style>
+</head>
+<body>
+
+<audio id="bgm" loop preload="auto">
+    <source src="1.mp3" type="audio/mpeg">
+</audio>
+
+<div id="page1">
+    <div id="loadTxt">加载中，请稍候...</div>
+    <button id="enterBtn">等待加载完成</button>
+</div>
+
+<div id="heart"></div>
+
+<script>
+const page1 = document.getElementById('page1');
+const heart = document.getElementById('heart');
+const loadTxt = document.getElementById('loadTxt');
+const enterBtn = document.getElementById('enterBtn');
+const bgm = document.getElementById('bgm');
+
+const texts = ["少熬夜","好好学习","按时吃饭","别分心","你最棒","加油","记得想我","平安喜乐"];
+const colors = ["lightpink","skyblue","lightgreen","lavender","lightyellow","plum"];
+
+setTimeout(()=>{
+    loadTxt.style.display = 'none';
+    enterBtn.classList.add('active');
+    enterBtn.innerText = '点击进入';
+},400);
+
+// 修复手机/微信/QQ 没声音 + 卡顿
+let isAudioPlayed = false;
+function playAudio(){
+    if(isAudioPlayed) return;
+    bgm.volume = 0.4;
+    let playPromise = bgm.play();
+    if(playPromise !== undefined){
+        playPromise.then(()=>{
+            isAudioPlayed = true;
+        }).catch(()=>{});
+    }
+}
+
+// 监听触摸+点击，强制激活音频
+document.addEventListener('touchstart', playAudio);
+enterBtn.onclick = function(){
+    playAudio();
+    page1.style.display = 'none';
+    heart.style.display = 'block';
+    startDraw();
+};
+
+function startDraw(){
+    heart.innerHTML = '';
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const cx = w / 2;
+    const cy = h / 2;
+    const scale = Math.min(w,h) / 32;
+
+    let points = [];
+    for(let i=0;i<40;i++){
+        const t = i/40 * Math.PI*2;
+        const x = 16 * Math.sin(t)**3;
+        const y = 13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);
+        points.push([x*scale + cx, -y*scale + cy]);
+    }
+
+    let idx = 0;
+    function show(){
+        if(idx >= points.length){
+            setTimeout(startDraw,3000);
+            return;
+        }
+        const p = points[idx];
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.style.left = p[0] - 65 + 'px';
+        div.style.top = p[1] - 22 + 'px';
+        div.style.background = colors[Math.floor(Math.random()*colors.length)];
+        div.innerText = texts[Math.floor(Math.random()*texts.length)];
+        heart.appendChild(div);
+        idx++;
+        setTimeout(show,70);
+    }
+    show();
+}
+</script>
+</body>
+</html>

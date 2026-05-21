@@ -25,6 +25,9 @@
             border: 2px solid #fff;
             border-radius: 50px;
             cursor: pointer;
+            display: block !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
         }
         #heartContainer {
             width: 100vw;
@@ -47,23 +50,29 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             z-index: 10;
         }
+        #bgm {
+            display: none;
+            preload: auto;
+        }
     </style>
 </head>
 <body>
+    <audio id="bgm" loop preload="auto">
+        <source src="1.mp3" type="audio/mpeg">
+    
+
     <button id="enterBtn">点击进入</button>
     <div id="heartContainer"></div>
 
 <script>
     const enterBtn = document.getElementById('enterBtn');
     const heartContainer = document.getElementById('heartContainer');
+    const bgm = document.getElementById('bgm');
 
     const texts = ["少熬夜","好好学习","按时吃饭","别分心","你最棒","加油","记得想我","平安喜乐"];
     const colors = ["lightpink","skyblue","lightgreen","lavender","lightyellow","plum"];
 
     enterBtn.onclick = function() {
-        // ✅ 点击后再创建音频，避开浏览器限制
-        const bgm = new Audio('1.mp3');
-        bgm.loop = true;
         bgm.volume = 0.4;
         bgm.play().catch(() => {});
 

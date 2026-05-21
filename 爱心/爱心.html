@@ -21,10 +21,10 @@
             padding:15px 40px;font-size:18px;color:#fff;
             background:rgba(255,255,255,0.3);
             border:2px solid #fff;border-radius:50px;
-            opacity:0.5;cursor:default;
+            opacity:0.5;cursor:default;pointer-events:none;
         }
         #enterBtn.active{
-            opacity:1;cursor:pointer;
+            opacity:1;cursor:pointer;pointer-events:auto;
         }
 
         #heart{
@@ -52,11 +52,11 @@
 
 <audio id="bgm" loop preload="auto">
     <source src="1.mp3" type="audio/mpeg">
-</audio>
+
 
 <div id="page1">
-    <div id="loadTxt">加载中，请稍候...</div>
-    <button id="enterBtn">等待加载完成</button>
+    <div id="loadTxt">音乐加载中...</div>
+    <button id="enterBtn">暂未就绪</button>
 </div>
 
 <div id="heart"></div>
@@ -71,27 +71,22 @@ const bgm = document.getElementById('bgm');
 const texts = ["少熬夜","好好学习","按时吃饭","别分心","你最棒","加油","记得想我","平安喜乐"];
 const colors = ["lightpink","skyblue","lightgreen","lavender","lightyellow","plum"];
 
-setTimeout(()=>{
+// 音频完全加载完毕才解锁按钮
+bgm.addEventListener('canplaythrough',function(){
     loadTxt.style.display = 'none';
     enterBtn.classList.add('active');
     enterBtn.innerText = '点击进入';
-},400);
+});
 
-// 修复手机/微信/QQ 没声音 + 卡顿
 let isAudioPlayed = false;
 function playAudio(){
     if(isAudioPlayed) return;
     bgm.volume = 0.4;
-    let playPromise = bgm.play();
-    if(playPromise !== undefined){
-        playPromise.then(()=>{
-            isAudioPlayed = true;
-        }).catch(()=>{});
-    }
+    let p = bgm.play();
+    if(p) p.catch(()=>{});
+    isAudioPlayed = true;
 }
 
-// 监听触摸+点击，强制激活音频
-document.addEventListener('touchstart', playAudio);
 enterBtn.onclick = function(){
     playAudio();
     page1.style.display = 'none';
@@ -100,7 +95,6 @@ enterBtn.onclick = function(){
 };
 
 function startDraw(){
-    heart.innerHTML = '';
     const w = window.innerWidth;
     const h = window.innerHeight;
     const cx = w / 2;
@@ -118,7 +112,10 @@ function startDraw(){
     let idx = 0;
     function show(){
         if(idx >= points.length){
-            setTimeout(startDraw,3000);
+            setTimeout(()=>{
+                heart.innerHTML = '';
+                startDraw();
+            },3000);
             return;
         }
         const p = points[idx];

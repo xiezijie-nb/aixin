@@ -12,11 +12,17 @@
             position:fixed; left:0; top:0; width:100%; height:100%;
             background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fecfef, #a8edea);
             display:flex; align-items:center; justify-content:center; z-index:9999;
+            flex-direction: column; gap:30px;
         }
         .btn {
             padding:15px 40px; font-size:18px; color:#fff;
             background:rgba(255,255,255,0.3); border:2px solid #fff;
             border-radius:50px; cursor:pointer;
+        }
+        .loading-tip{
+            font-size:16px;
+            color:#fff;
+            display:none;
         }
 
         .main {
@@ -41,13 +47,13 @@
 </head>
 <body>
 
-<!-- 预加载音乐，进入页面就后台缓冲 -->
 <audio id="bgm" loop preload="auto">
     <source src="6.mp3">
 
 
 <div class="start">
     <button class="btn">点击进入</button>
+    <div class="loading-tip">资源加载中，请稍候...</div>
 </div>
 <div class="main"></div>
 
@@ -56,25 +62,27 @@ const start = document.querySelector('.start');
 const main = document.querySelector('.main');
 const btn = document.querySelector('.btn');
 const bgm = document.getElementById('bgm');
+const loadingTip = document.querySelector('.loading-tip');
 
-// 页面加载即刻后台缓冲音乐
 bgm.load();
 
 const tips = ['少熬夜','好好学习','按时吃饭','别分心','你最棒','加油','记得想我','平安喜乐','万事顺遂'];
 const colors = ['lightpink','skyblue','lightgreen','lavender','lightyellow','plum'];
 
 btn.onclick = function(){
-    start.style.display = 'none';
-    main.style.display = 'block';
-    bgm.volume = 0.4;
-    // 缓冲完成直接播放，减少卡顿
-    bgm.play().catch(()=>{});
-    play();
+    btn.style.display = 'none';
+    loadingTip.style.display = 'block';
+    setTimeout(()=>{
+        start.style.display = 'none';
+        main.style.display = 'block';
+        bgm.volume = 0.4;
+        bgm.play().catch(()=>{});
+        play();
+    },600);
 };
 
 function play(){
     main.innerHTML = '';
-
     const w = innerWidth;
     const h = innerHeight;
     const cx = w / 2;

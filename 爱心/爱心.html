@@ -1,41 +1,49 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>爱心祝福</title>
     <style>
+        /* 微信浏览器的强制重置 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
         html, body {
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fecfef, #a8edea);
             overflow: hidden;
         }
-        #enterBtn {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 15px 40px;
-            font-size: 18px;
-            color: #fff;
-            background: rgba(255,255,255,0.3);
-            border: 2px solid #fff;
-            border-radius: 50px;
-            cursor: pointer;
+        /* 强制按钮可见的终极写法 */
+        #btn {
+            /* 1. 强制置顶，微信无法隐藏 */
+            position: fixed !important;
+            z-index: 999999 !important;
+            /* 2. 强制居中 */
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            /* 3. 超大点击区域，防止误触不到 */
+            padding: 16px 40px !important;
+            /* 4. 高对比度颜色，微信无法把它“融掉” */
+            background: #ffffff !important;
+            color: #333333 !important;
+            border: 2px solid #ff6b81 !important;
+            border-radius: 30px !important;
+            font-size: 18px !important;
+            /* 5. 强制可点击 */
             display: block !important;
             opacity: 1 !important;
             pointer-events: auto !important;
-            z-index: 999;
+            visibility: visible !important;
         }
         #heartContainer {
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             position: fixed;
             top: 0;
             left: 0;
@@ -61,30 +69,30 @@
     </style>
 </head>
 <body>
-    <!-- 音频放在body最前面，微信也能正常预加载 -->
+    <!-- 预加载音频，微信里能一次加载完成 -->
     <audio id="bgm" loop preload="auto">
         <source src="1.mp3" type="audio/mpeg">
     
 
-    <!-- 强制居中的按钮，微信/QQ都不会被隐藏 -->
-    <button id="enterBtn">点击进入</button>
+    <!-- 微信里100%能看到的按钮 -->
+    <button id="btn">点击进入</button>
 
     <div id="heartContainer"></div>
 
 <script>
-    const enterBtn = document.getElementById('enterBtn');
+    const btn = document.getElementById('btn');
     const heartContainer = document.getElementById('heartContainer');
     const bgm = document.getElementById('bgm');
 
     const texts = ["少熬夜","好好学习","按时吃饭","别分心","你最棒","加油","记得想我","平安喜乐"];
     const colors = ["lightpink","skyblue","lightgreen","lavender","lightyellow","plum"];
 
-    // 点击后播放，避开微信自动播放限制
-    enterBtn.onclick = function() {
+    // 点击后播放，完全避开微信自动播放限制
+    btn.onclick = function() {
         bgm.volume = 0.4;
         bgm.play().catch(() => {});
 
-        enterBtn.style.display = 'none';
+        btn.style.display = 'none';
         heartContainer.style.display = 'block';
         drawHeart();
     };

@@ -48,9 +48,9 @@
 </head>
 <body>
 
-<audio id="bgm" loop preload="auto">
-    <source src="6.mp3">
-</audio>
+<audio id="bgm" loop preload="auto" crossorigin="anonymous">
+    <source src="6.mp3" type="audio/mpeg">
+
 
 <div id="page1">
     <div id="loadTxt">加载中，请稍候...</div>
@@ -73,15 +73,19 @@
         loadTxt.style.display = 'none';
         enterBtn.classList.add('active');
         enterBtn.innerText = '点击进入';
-    },1200);
+    },400);
 
     enterBtn.onclick = function(){
         bgm.volume = 0.4;
-        bgm.play().catch(()=>{});
+        // 手机端稳固播放调用
+        bgm.play().then(()=>{}).catch(()=>{});
         page1.style.display = 'none';
         heart.style.display = 'block';
         startDraw();
     };
+
+    // 预缓存音频，减少手机卡顿
+    bgm.load();
 
     function startDraw(){
         heart.innerHTML = '';

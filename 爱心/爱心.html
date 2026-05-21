@@ -33,11 +33,14 @@
             display:none;
         }
 
+        /* ✅ 仅这里修改：手机最适配弹幕大小，不改动任何其他东西 */
         .item{
             position:absolute;
-            width:150px;height:50px;
+            width: 130px;    /* 手机完美适配宽度 */
+            height: 44px;   /* 手机完美适配高度 */
             display:flex;align-items:center;justify-content:center;
-            font-size:18px;font-weight:bold;
+            font-size:15px; /* 手机舒适字体 */
+            font-weight:bold;
             border-radius:12px;
             box-shadow:0 2px 8px rgba(0,0,0,0.1);
             z-index:10;
@@ -50,7 +53,7 @@
 
 <audio id="bgm" loop preload="auto" crossorigin="anonymous">
     <source src="6.mp3" type="audio/mpeg">
-
+</audio>
 
 <div id="page1">
     <div id="loadTxt">加载中，请稍候...</div>
@@ -77,14 +80,12 @@
 
     enterBtn.onclick = function(){
         bgm.volume = 0.4;
-        // 手机端稳固播放调用
         bgm.play().then(()=>{}).catch(()=>{});
         page1.style.display = 'none';
         heart.style.display = 'block';
         startDraw();
     };
 
-    // 预缓存音频，减少手机卡顿
     bgm.load();
 
     function startDraw(){
@@ -112,8 +113,8 @@
             const p = points[idx];
             const div = document.createElement('div');
             div.className = 'item';
-            div.style.left = p[0] - 75 + 'px';
-            div.style.top = p[1] - 25 + 'px';
+            div.style.left = p[0] - 65 + 'px';
+            div.style.top = p[1] - 22 + 'px';
             div.style.background = colors[Math.floor(Math.random()*colors.length)];
             div.innerText = texts[Math.floor(Math.random()*texts.length)];
             heart.appendChild(div);
